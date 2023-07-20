@@ -1,0 +1,41 @@
+SELECT *
+FROM PortofolioCovidProject..coviddeaths
+WHERE continent IS NOT NULL
+ORDER BY 3,4
+
+--Select the data that we are going to using
+SELECT location, date,total_cases, new_cases, total_deaths, population
+FROM PortofolioCovidProject..coviddeaths
+WHERE continent is not null
+ORDER BY location, date ASC
+
+--Total cases vs Total deaths in Indonesia
+ALTER TABLE PortofolioCovidproject..coviddeaths
+ALTER COLUMN total_cases FLOAT
+
+Select Location, date, total_cases,total_deaths, (total_deaths/total_cases)*100 as Death_Percentage
+From PortofolioCovidProject..coviddeaths
+WHERE  location = 'Indonesia'
+ORDER BY location, date
+
+--Total cases vs Population
+Select Location, date, population, total_cases, (total_cases/population)*100 as PopulationInfected_Percentage
+From PortofolioCovidProject..coviddeaths
+--WHERE  location = 'Indonesia'
+ORDER BY location, date;
+
+--Countries with the highest Infection Rate compared to Population
+Select Location, population, MAX(total_cases)as HighestInfectionRate, MAX((total_cases/population))*100 as PopulationInfected_Percentage
+From PortofolioCovidProject..coviddeaths
+GROUP BY population, location
+ORDER BY PopulationInfected_Percentage DESC;
+
+--Coutries with the highest Death Count per Population
+ALTER TABLE PortofolioCovidproject..coviddeaths
+ALTER COLUMN total_deaths INT
+
+Select location, MAX (total_deaths) TotalDeathsCounts
+From PortofolioCovidProject..coviddeaths
+WHERE continent IS NOT NULL
+GROUP BY location
+ORDER BY TotalDeathsCounts DESC
