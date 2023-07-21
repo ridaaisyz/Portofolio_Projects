@@ -153,3 +153,17 @@ ORDER BY c_death.location, c_death.date;
 SELECT *,
        (RollingPeopleVaccinated / CAST(Population AS numeric)) * 100 AS PercentagePopulationVaccinated
 FROM #PercentPopulationVaccinated;
+
+--Creating views to store data for visualizations
+
+CREATE VIEW PercentPopulationVaccinated AS
+SELECT c_death.continent, c_death.location, c_death.date, c_death.population, c_vaccination.new_vaccinations
+, SUM(CAST(new_vaccinations AS BIGINT)) OVER (PARTITION BY c_death.location ORDER BY c_death.location, c_death.date) AS RollingPeopleVaccinated
+FROM PortofolioCovidProject..coviddeaths AS c_death
+JOIN PortofolioCovidProject..covidvaccination AS c_vaccination
+ON c_death.location = c_vaccination.location
+AND c_death.date = c_vaccination.date
+WHERE c_death.continent IS NOT NULL
+--ORDER BY continent, location, date
+
+CREATE VIEW 
