@@ -31,6 +31,14 @@ From PortofolioCovidProject..coviddeaths
 --WHERE  location = 'Indonesia'
 ORDER BY location, date;
 
+--Total Death per Location
+SELECT location, SUM(cast(new_deaths as int)) as TotalDeathCount
+FROM PortofolioCovidProject..coviddeaths
+WHERE continent is null 
+and location not in ('High Income', 'Upper middle income', 'Lower middle income', 'Low income', 'World', 'European Union')
+GROUP BY location
+ORDER BY TotalDeathCount desc
+
 --Countries with the highest Infection Rate compared to Population
 Select Location, population, MAX(total_cases)as HighestInfectionRate, MAX((total_cases/population))*100 as PopulationInfected_Percentage
 From PortofolioCovidProject..coviddeaths
