@@ -32,33 +32,3 @@ From PortofolioCovidProject..coviddeaths
 WHERE location not in ('High Income', 'Upper middle income', 'Lower middle income', 'Low income')
 GROUP BY population, location, date
 ORDER BY PopulationInfected_Percentage DESC;
-
---1
-Select c_death.continent, c_death.location, c_death.date, c_death.population
-, MAX(c_vac.total_vaccinations) as RollingPeopleVaccinated
---, (RollingPeopleVaccinated/population)*100
-From PortofolioCovidProject..coviddeaths c_death
-Join PortofolioCovidProject..covidvaccination c_vac
-	On c_death.location = c_vac.location
-	and c_death.date = c_vac.date
-where c_death.continent is not null 
-group by c_death.continent, c_death.location, c_death.date, c_death.population
-order by 1,2,3
-
---2
---3
-WITH PopvsVac (continent, location, date, population, new_vaccination, RollingPeopleVaccinated)
-AS 
-(
-SELECT c_death.continent, c_death.location, c_death.date, c_death.population, c_vaccination.new_vaccinations
-, SUM(CAST(new_vaccinations AS BIGINT)) OVER (PARTITION BY c_death.location ORDER BY c_death.location, c_death.date) AS RollingPeopleVaccinated
-FROM PortofolioCovidProject..coviddeaths AS c_death
-JOIN PortofolioCovidProject..covidvaccination AS c_vaccination
-ON c_death.location = c_vaccination.location
-AND c_death.date = c_vaccination.date
-WHERE c_death.continent IS NOT NULL
-)
-SELECT *, (RollingPeopleVaccinated/population)*100 AS PercentPeopleVaccinated
-FROM PopvsVac
-
---7
